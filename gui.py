@@ -42,22 +42,39 @@ def main_gui():
     label.pack(anchor='center')  # Use pack() method to add the label to the window
 
     lf = tk.LabelFrame(root)
-    lf.pack(fill="both", expand="yes", padx=100, pady=50)
+    lf.pack(fill="both", expand="yes", padx=100, pady=25)
     
     # Add Calendar
     cal = Calendar(lf, selectmode = 'day',
-               year = 2020, month = 5,
-               day = 22)
+               year = 2024, month = 3,
+               day = 20)
  
     cal.pack(pady = 20)
     
+    L_current_mil = Label(lf, text = "Current Miles on Odometer: ")
+    L_current_mil.place(relx = 0.15, rely = 0.72)
+    
+    current_mil = Entry(lf)
+    current_mil.place(relx = 0.55, rely = 0.72)
+    
         
     
-    milLeft = tk.Label(lf)
+    LmilLeft = tk.Label(lf)
+    LmilOverUnder = tk.Label(lf)
     
     def button_click():
-        milLeft.config(text=("You should have " + str(daysLeft(cal) * (10000/360)) + " miles."))
-        milLeft.place(relx=0.2, rely=0.9)
+        milesPerDay = 10000/365
+        mpd_rounded = round(milesPerDay, 2)  # Round to 2 decimal places
+        
+        milLeft = daysLeft(cal) * mpd_rounded
+
+        LmilLeft.config(text=("You should have " + str(milLeft) + " miles."))
+        LmilLeft.place(relx=0.31, rely=0.85)
+        
+        milOverUnder = round(milLeft - int(current_mil.get()), 2)
+
+        LmilOverUnder.config(text=((f"You are over by {str(abs(milOverUnder))} miles." ) if milOverUnder <= 0 else (f"You are under by {str(milOverUnder)} miles.")))
+        LmilOverUnder.place(relx=0.31, rely=0.92)
         
 
     button = tk.Button(lf, text="Begin Tracking", command=button_click)
